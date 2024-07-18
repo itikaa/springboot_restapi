@@ -25,8 +25,8 @@ public class studentcontroller {
     @Autowired
     private userservice userservice;
 
-@GetMapping
-    public ResponseEntity<?> getall(){
+@GetMapping("{username}")
+    public ResponseEntity<?> getall(@PathVariable String username){
          Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
 String username=authentication.getName();
     users user=userservice.findByusername((username));
@@ -37,12 +37,13 @@ String username=authentication.getName();
     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 }
 
-@PostMapping
-    public ResponseEntity<student> createentry(@RequestBody student mystudent){
+@PostMapping("{username}")
+    public ResponseEntity<student> createentry(@RequestBody student mystudent,@PathVariable String usernamet){
     try{
         Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
         String username=authentication.getName();
-        stservice.savestudent(mystudent,username);
+         users user=userservice.findByusername((username));
+        stservice.savestudent(mystudent,user);
         return  new ResponseEntity<>(mystudent, HttpStatus.CREATED);
     }
     catch (Exception e){
